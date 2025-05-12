@@ -15,7 +15,7 @@ const HeroSection = () => {
         {/* First Line Animation */}
         <TypeIt
           options={{
-            strings: [` Hidup <span class="text-blue-500" >Vibe Coder</span>`],
+            strings: [`Unlock Your <span class="text-blue-500" > Potential</span>`],
             speed: 100, // Speed of typing
             loop: false, // No loop, first line will stay
             breakLines: false,
@@ -31,7 +31,7 @@ const HeroSection = () => {
           <TypeIt
               options={{
                 strings: [
-                  `<span class="text-blue-600" >Dengan GPT</span> Cepat Selesai kodinganku`
+                  `<span class="text-blue-600" >Jendela Dunia</span> Dimulai dari satu buku`
                 ],
                 speed: 150,
                 loop: false,
