@@ -4,12 +4,12 @@ import { Link } from 'react-router-dom';
 
 const Navbar = () => {
   return (
-    <nav className="bg-white/80 backdrop-blur-md shadow-md px-6 py-5 flex items-center sticky top-0 z-50">
+    <nav className="bg-white/80 backdrop-blur-md shadow-xl px-6 py-5 flex items-center sticky top-0 z-50">
       {/* Logo */}
-      <div className="text-2xl font-bold text-blue-700">📘 LibVerse</div>
+      <div className="text-2xl font-bold text-blue-700">⛩ IMPHEN</div>
 
       {/* Navbar links and Login Button */}
-      <div className="flex ml-auto items-center space-x-6">
+      <div className="flex ml-auto items-center space-x-10">
         <ul className="flex space-x-6 text-gray-700 font-medium">
           <li className="hover:text-blue-500 transition cursor-pointer">
             <Link to="/">Home</Link>  {/* Home Link */}
@@ -23,7 +23,7 @@ const Navbar = () => {
 
         <Link
             to="/login"
-            className="bg-blue-600 text-white font-medium px-5 py-2 rounded-lg border-white hover:bg-blue-700 hover:text-white transition duration-200
+            className="bg-blue-600 text-white font-medium mx-3 px-7 py-2 rounded-lg border-white hover:bg-blue-700 hover:text-white transition duration-200
 "
           >
             Login
