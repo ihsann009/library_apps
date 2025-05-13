@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 
 const books = [
     {
@@ -348,8 +348,11 @@ const books = [
 ];
 
 const ContentLibrary = () => {
-  const [searchQuery, setSearchQuery] = useState("");
 
+  const [searchQuery, setSearchQuery] = useState("");
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
   // Filter books based on the search query
   const filteredBooks = books.filter((book) =>
     book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -375,14 +378,14 @@ const ContentLibrary = () => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
-          <button className="absolute right-3 bg-blue-600 text-white p-3 rounded-full hover:bg-blue-700 transition duration-300 focus:outline-none">
+          {/* <button className="absolute right-5 bg-blue-600 text-white p-3 rounded hover:bg-blue-700 transition duration-300 focus:outline-none">
             <i className="fa fa-search"></i>
-          </button>
+          </button> */}
         </div>
       </div>
 
       {/* Book Cards */}
-      <div className="grid gap-15 mt-14 md:grid-cols-3">
+      <div className="grid gap-15 mt-14 md:grid-cols-5">
         {filteredBooks.length > 0 ? (
           filteredBooks.map((book) => (
             <div
@@ -399,7 +402,7 @@ const ContentLibrary = () => {
               <div className="p-5">
                 <h3 className="text-xl font-semibold text-gray-800">{book.title}</h3>
                 <p className="text-gray-600">by {book.author}</p>
-                <p className="text-sm text-purple-600 mt-1">Genre: {book.genre}</p>
+                <p className="text-sm text-blue-500 mt-1">Genre: {book.genre}</p>
                 <p className="text-sm text-green-600 mt-1">Stock: {book.stock} available</p>
                 <button className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
                   Read More
