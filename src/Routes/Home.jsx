@@ -10,7 +10,7 @@ const Home = () => {
       <HeroSection />
 
       {/* Featured Cards Section */}
-      <HomeCards />
+      
     </>
   );
 };
