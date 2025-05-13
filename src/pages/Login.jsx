@@ -55,10 +55,10 @@ const LoginPage = () => {
       {/* Pop-up Center */}
       {showModal && (
         <div className="absolute inset-0 flex items-center justify-center z-50">
-          <div className="bg-white border border-blue-200 p-6 rounded-xl shadow-xl animate-fadeZoomIn max-w-sm w-full mx-4">
+          <div className="bg-white border border-blue-200 p-6 rounded-xl shadow-xl animate-fadeZoomIn max-w-sm w-full mx-4 mb-20">
             <h3 className="text-lg font-semibold text-gray-800 mb-2">Lupa Password?</h3>
             <p className="text-sm text-gray-600 mb-4">
-              Silakan menghubungi pihak pelayanan untuk reset password.
+              Silakan menghubungi pihak perpustakaan untuk reset password.
             </p>
             <div className="flex justify-end">
               <button
@@ -87,7 +87,7 @@ const LoginPage = () => {
           }
 
           .animate-fadeZoomIn {
-            animation: fadeZoomIn 0.25s ease-out forwards;
+            animation: fadeZoomIn 0.3s ease-out forwards;
           }
         `}
       </style>
