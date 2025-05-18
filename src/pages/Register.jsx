@@ -1,16 +1,14 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axiosConfig";
-import { useAuth } from "../context/AuthContext";
 
-const LoginPage = () => {
+const RegisterPage = () => {
   const navigate = useNavigate();
-  const { login } = useAuth();
-  const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({
     username: "",
     password: ""
   });
+
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
@@ -26,24 +24,23 @@ const LoginPage = () => {
     setError("");
 
     try {
-      const response = await axiosInstance.post("/auth/login", {
+      const response = await axiosInstance.post("/auth/register", {
         username: formData.username,
         password: formData.password
       });
 
-      if (response.data.token) {
-        login(response.data.token);
-        navigate('/');
+      if (response.status === 201) {
+        navigate("/login");
       }
     } catch (err) {
-      setError(err.response?.data?.message || "Terjadi kesalahan saat login");
+      setError(err.response?.data?.message || "Terjadi kesalahan saat registrasi");
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-blue-200 font-sans relative">
       <div className="bg-white drop-shadow-2xl border-3 border-violet-100 rounded-xl p-15 w-full max-w-md">
-        <h2 className="text-3xl font-bold text-center text-gray-800 mb-10">Login to Your Account</h2>
+        <h2 className="text-3xl font-bold text-center text-gray-800 mb-10">Create Account</h2>
 
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
@@ -73,82 +70,28 @@ const LoginPage = () => {
               value={formData.password}
               onChange={handleChange}
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-              placeholder="Masukkan Password"
+              placeholder="Masukkan password"
               required
             />
-          </div>
-
-          <div className="flex items-center justify-between">
-            <label className="flex items-center space-x-2 text-sm">
-              <input type="checkbox" className="form-checkbox" />
-              <span>Remember me</span>
-            </label>
-            <button
-              type="button"
-              onClick={() => setShowModal(true)}
-              className="text-sm text-blue-500 hover:underline"
-            >
-              Forgot password?
-            </button>
           </div>
 
           <button
             type="submit"
             className="w-full bg-blue-600 hover:bg-blue-900 text-white py-2 rounded-lg font-semibold transition duration-200 cursor-pointer"
           >
-            Login
+            Register
           </button>
 
           <p className="text-center text-gray-600 mt-4">
-            Belum punya akun?{" "}
-            <Link to="/register" className="text-blue-600 hover:underline">
-              Register di sini
+            Sudah punya akun?{" "}
+            <Link to="/login" className="text-blue-600 hover:underline">
+              Login di sini
             </Link>
           </p>
         </form>
       </div>
-
-      {/* Pop-up Center */}
-      {showModal && (
-        <div className="absolute inset-0 flex items-center justify-center z-50">
-          <div className="bg-white border border-blue-200 p-6 rounded-xl shadow-xl animate-fadeZoomIn max-w-sm w-full mx-4">
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">Lupa Password?</h3>
-            <p className="text-sm text-gray-600 mb-4">
-              Silakan menghubungi pihak pelayanan untuk reset password.
-            </p>
-            <div className="flex justify-end">
-              <button
-                onClick={() => setShowModal(false)}
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
-              >
-                Tutup
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Animasi */}
-      <style>
-        {`
-          @keyframes fadeZoomIn {
-            0% {
-              opacity: 0;
-              transform: scale(0.95);
-            }
-            100% {
-              opacity: 1;
-              transform: scale(1);
-            }
-          }
-
-          .animate-fadeZoomIn {
-            animation: fadeZoomIn 0.25s ease-out forwards;
-          }
-        `}
-      </style>
     </div>
   );
 };
 
-export default LoginPage;
+export default RegisterPage;
