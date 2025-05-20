@@ -31,7 +31,7 @@ const ManajemenBuku = () => {
     setLoading(true);
     setError("");
     try {
-      const response = await axiosInstance.get("/admin/buku");
+      const response = await axiosInstance.get("/books");
       setBooks(response.data);
     } catch (err) {
       setError(err.response?.data?.message || "Gagal memuat data buku");
@@ -52,7 +52,7 @@ const ManajemenBuku = () => {
   const handleAddBook = async (e) => {
     e.preventDefault();
     try {
-      await axiosInstance.post("/admin/buku", formData);
+      await axiosInstance.post("/books", formData);
       setShowAddModal(false);
       setFormData({
         judul_buku: "",
@@ -71,7 +71,7 @@ const ManajemenBuku = () => {
   const handleEditBook = async (e) => {
     e.preventDefault();
     try {
-      await axiosInstance.put(`/admin/buku/${selectedBook.id_buku}`, formData);
+      await axiosInstance.put(`/books/${selectedBook.id_buku}`, formData);
       setShowEditModal(false);
       setSelectedBook(null);
       setFormData({
@@ -91,7 +91,7 @@ const ManajemenBuku = () => {
   const handleDeleteBook = async (id) => {
     if (window.confirm("Apakah Anda yakin ingin menghapus buku ini?")) {
       try {
-        await axiosInstance.delete(`/admin/buku/${id}`);
+        await axiosInstance.delete(`/books/${id}`);
         fetchBooks();
       } catch (err) {
         setError(err.response?.data?.message || "Gagal menghapus buku");
@@ -114,12 +114,12 @@ const ManajemenBuku = () => {
             <h1 className="text-3xl font-bold text-blue-700">Manajemen Buku</h1>
             <p className="text-gray-600">Selamat datang, {user?.username}!</p>
           </div>
-          <button
+          {/* <button
             onClick={handleLogout}
             className="flex items-center gap-2 text-red-600 hover:text-red-800 font-semibold"
           >
             <LogOut className="w-5 h-5" /> Logout
-          </button>
+          </button> */}
         </div>
 
         {/* Search and Add Button */}
@@ -178,7 +178,7 @@ const ManajemenBuku = () => {
                       Jumlah
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Kategori
+                      Gambar
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Aksi
@@ -194,19 +194,19 @@ const ManajemenBuku = () => {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {book.penulis}
+                        {book.penulis_buku}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {book.penerbit}
+                        {book.penerbit_buku}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {book.tahun_terbit}
+                        {book.tahun_penerbit}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {book.jumlah_buku}
+                        {book.stok}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {book.kategori}
+                        {book.images}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <button

@@ -1,10 +1,30 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useRef, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { LogOut, User, LayoutDashboard } from 'lucide-react';
 
 const Navbar = ({ isVisible, onLogout }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const profileRef = useRef(null);
+
+  // Hide Logout on /admin/manajemen-buku
+  const hideLogout = location.pathname === '/admin/manajemen-buku';
+
+  // Close dropdown if click outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (profileRef.current && !profileRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   return (
     <nav className={`bg-white/80 backdrop-blur-md shadow-xl px-6 py-3 flex items-center justify-between sticky top-0 z-50 transition-transform duration-500 ease-in-out ${
@@ -26,21 +46,51 @@ const Navbar = ({ isVisible, onLogout }) => {
         {user && user.username ? (
           <div className="flex items-center space-x-4">
             <div
-              className="flex items-center space-x-2 cursor-pointer hover:underline"
-              onClick={() => navigate('/profile')}
-              title="Lihat Profil"
+              ref={profileRef}
+              className="relative flex items-center space-x-2 cursor-pointer"
             >
-              <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold">
+              <div
+                className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold"
+                onClick={() => setDropdownOpen((open) => !open)}
+                title="Lihat Profil"
+              >
                 {user.username.charAt(0).toUpperCase()}
               </div>
-              <span className="text-gray-700 font-medium">{user.username}</span>
+              <span
+                className="text-gray-700 font-medium hover:text-black transition"
+                onClick={() => setDropdownOpen((open) => !open)}
+                style={{ userSelect: 'none' }}
+              >
+                {user.username}
+              </span>
+              {/* Dropdown */}
+              {dropdownOpen && (
+                <div className="absolute right-0 mt-16 w-64 bg-white rounded-xl shadow-2xl border border-blue-100 z-50 animate-fade-slide">
+                  <button
+                    className="flex items-center gap-2 w-full text-left px-4 py-3 hover:bg-blue-50 hover:font-semibold hover:text-blue-700 transition rounded-t-xl group"
+                    onClick={() => { setDropdownOpen(false); navigate('/profile'); }}
+                  >
+                    <User className="w-5 h-5 text-gray-400 group-hover:text-blue-700 transition" />
+                    Lihat Profil
+                  </button>
+                  <button
+                    className="flex items-center gap-2 w-full text-left px-4 py-3 hover:bg-blue-50 hover:font-semibold hover:text-blue-700 transition group"
+                    onClick={() => { setDropdownOpen(false); navigate('/admin/dashboard'); }}
+                  >
+                    <LayoutDashboard className="w-5 h-5 text-gray-400 group-hover:text-blue-700 transition" />
+                    Dashboard Admin
+                  </button>
+                </div>
+              )}
             </div>
-            <button
-              onClick={onLogout}
-              className="bg-red-600 text-white font-medium px-4 py-2 rounded-lg hover:bg-red-700 transition duration-200"
-            >
-              Logout
-            </button>
+            {!hideLogout && (
+              <button
+                onClick={onLogout}
+                className="bg-red-600 text-white font-medium px-4 py-2 rounded-lg hover:bg-red-700 transition duration-200 flex items-center gap-2"
+              >
+                <LogOut className="w-5 h-5" /> Logout
+              </button>
+            )}
           </div>
         ) : (
           <Link
@@ -51,6 +101,16 @@ const Navbar = ({ isVisible, onLogout }) => {
           </Link>
         )}
       </div>
+      {/* Animasi fade-slide untuk dropdown */}
+      <style>{`
+        @keyframes fade-slide {
+          0% { opacity: 0; transform: translateY(10px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-slide {
+          animation: fade-slide 0.25s cubic-bezier(0.4,0,0.2,1);
+        }
+      `}</style>
     </nav>
   );
 };

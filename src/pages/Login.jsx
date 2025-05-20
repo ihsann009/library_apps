@@ -33,7 +33,14 @@ const LoginPage = () => {
 
       if (response.data.token) {
         login(response.data.token, response.data.user);
-        navigate('/dashboard');
+        // Redirect berdasarkan role
+        if (response.data.user.role === 'admin') {
+          navigate('/admin/dashboard');
+        } else if (response.data.user.role === 'mahasiswa') {
+          navigate('/dashboard');
+        } else if (response.data.user.role === 'staff') {
+          navigate('/staff/dashboard');
+        }
       }
     } catch (err) {
       setError(err.response?.data?.message || "Terjadi kesalahan saat login");

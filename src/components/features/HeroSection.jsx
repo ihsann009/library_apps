@@ -91,7 +91,7 @@ const HeroSection = () => {
                 to="/register"
                 className="group relative inline-flex items-center justify-center px-8 py-4 font-bold text-white border-2 border-white rounded-lg overflow-hidden transition-all duration-300 hover:bg-white hover:text-blue-600"
               >
-                <span className="relative z-10 group-hover:scale-105 transition-transform duration-300">Daftar Anggota</span>
+                <span className="relative z-10 group-hover:scale-105 transition-transform duration-300">Daftar </span>
                 <div className="absolute inset-0 w-full h-full transition-all duration-300 group-hover:bg-white"></div>
               </Link>
             </div>
@@ -106,9 +106,9 @@ const HeroSection = () => {
               }}
             >
               <img
-                src="https://static.vecteezy.com/system/resources/previews/021/008/708/original/muslim-woman-reading-book-illustration-free-vector.jpg"
+                src="imphen.png"
                 alt="Mahasiswa Muslim Membaca Buku"
-                className="rounded-2xl shadow-2xl transform hover:scale-105 transition-all duration-500 w-full h-auto object-cover bg-white"
+                className="rounded-2xl shadow-2xl transform hover:scale-105 transition-all duration-500 w-full h-auto object-cover"
               />
             </div>
             {/* Decorative Elements */}

@@ -22,13 +22,20 @@ const DashboardAdmin = () => {
       setLoading(true);
       setError("");
       try {
-        // Fetch dashboard stats
-        const statsRes = await axiosInstance.get("/admin/dashboard/stats");
-        setStats(statsRes.data);
+        // Fetch total buku
+        const bukuRes = await axiosInstance.get("/books");
+        // Fetch total mahasiswa
+        const mhsRes = await axiosInstance.get("/mahasiswaAdmin");
+        // Fetch peminjaman terlambat
+        const terlambatRes = await axiosInstance.get("/admin/peminjaman-terlambat");
 
-        // Fetch recent peminjaman
-        const peminjamanRes = await axiosInstance.get("/admin/dashboard/recent-peminjaman");
-        setRecentPeminjaman(peminjamanRes.data);
+        setStats({
+          totalBuku: bukuRes.data.length,
+          totalMahasiswa: mhsRes.data.length,
+          peminjamanAktif: 0, // Belum ada endpoint khusus, set 0
+          peminjamanTerlambat: Array.isArray(terlambatRes.data) ? terlambatRes.data.length : 0
+        });
+        setRecentPeminjaman([]); // Belum ada endpoint, kosongkan
       } catch (err) {
         setError(err.response?.data?.message || "Gagal memuat data dashboard");
       } finally {
@@ -52,11 +59,21 @@ const DashboardAdmin = () => {
             <h1 className="text-3xl font-bold text-blue-700">Dashboard Admin</h1>
             <p className="text-gray-600">Selamat datang, {user?.username}!</p>
           </div>
+        </div>
+
+        {/* Navigasi CRUD */}
+        <div className="flex gap-4 mb-8">
           <button
-            onClick={handleLogout}
-            className="flex items-center gap-2 text-red-600 hover:text-red-800 font-semibold"
+            onClick={() => navigate('/admin/manajemen-buku')}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition"
           >
-            <LogOut className="w-5 h-5" /> Logout
+            Manajemen Buku
+          </button>
+          <button
+            onClick={() => navigate('/admin/manajemen-mahasiswa')}
+            className="bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 transition"
+          >
+            Manajemen Mahasiswa
           </button>
         </div>
 

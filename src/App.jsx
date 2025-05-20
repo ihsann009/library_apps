@@ -5,8 +5,6 @@ import { AuthProvider } from './context/AuthContext';
 import SidebarNavbar from './components/layout/Sidebar';
 import AppRoutes from './Routes';
 import Footer from './components/layout/Footer';
-import DashboardMahasiswa from './pages/DashboardMahasiswa';
-import ProfileMahasiswa from './pages/ProfileMahasiswa';
 
 const App = () => {
   return (
@@ -17,8 +15,6 @@ const App = () => {
           <main className="flex-grow">
             <Routes>
               <Route path="/*" element={<AppRoutes />} />
-              <Route path="/dashboard" element={<DashboardMahasiswa />} />
-              <Route path="/profile" element={<ProfileMahasiswa />} />
             </Routes>
           </main>
           <Footer />
