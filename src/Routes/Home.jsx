@@ -1,17 +1,16 @@
 // routes/Home.js
 import React from 'react';
-import HeroSection from '../Components/HeroSection';
-import HomeCards from '../Components/HomeCards';
+import HeroSection from '../components/features/HeroSection';
+import HomeCards from '../components/features/HomeCards';
 
 const Home = () => {
   return (
-    <>
-      {/* Hero Section */}
+    <div className="min-h-screen">
       <HeroSection />
-
-      {/* Featured Cards Section */}
-      <HomeCards />
-    </>
+      <div className="container mx-auto px-4 py-12">
+        <HomeCards />
+      </div>
+    </div>
   );
 };
 

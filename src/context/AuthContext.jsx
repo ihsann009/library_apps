@@ -4,6 +4,7 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [mahasiswa, setMahasiswa] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -24,10 +25,16 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem('token');
       }
     }
+    const mhs = localStorage.getItem('mahasiswa');
+    if (mhs) setMahasiswa(JSON.parse(mhs));
   }, []);
 
-  const login = (token) => {
+  const login = (token, mahasiswaData) => {
     localStorage.setItem('token', token);
+    if (mahasiswaData) {
+      localStorage.setItem('mahasiswa', JSON.stringify(mahasiswaData));
+      setMahasiswa(mahasiswaData);
+    }
     try {
       const base64Url = token.split('.')[1];
       const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -44,13 +51,20 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const updateMahasiswa = (mhs) => {
+    setMahasiswa(mhs);
+    localStorage.setItem('mahasiswa', JSON.stringify(mhs));
+  };
+
   const logout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('mahasiswa');
     setUser(null);
+    setMahasiswa(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, mahasiswa, updateMahasiswa }}>
       {children}
     </AuthContext.Provider>
   );

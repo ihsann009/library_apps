@@ -2,7 +2,10 @@ import axios from 'axios';
 
 // Create axios instance
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:8080/api'
+  baseURL: 'https://backend-service-865893142267.asia-southeast2.run.app/api',
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
 
 // Add request interceptor
