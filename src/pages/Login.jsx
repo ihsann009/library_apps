@@ -37,7 +37,7 @@ const LoginPage = () => {
         if (response.data.user.role === 'admin') {
           navigate('/admin/dashboard');
         } else if (response.data.user.role === 'mahasiswa') {
-          navigate('/dashboard');
+          navigate('/');
         } else if (response.data.user.role === 'staff') {
           navigate('/staff/dashboard');
         }
