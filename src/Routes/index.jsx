@@ -8,6 +8,10 @@ import DashboardAdmin from '../pages/admin/DashboardAdmin';
 import ManajemenBuku from '../pages/admin/ManajemenBuku';
 import ManajemenMahasiswa from '../pages/admin/ManajemenMahasiswa';
 import DashboardStaff from '../pages/staff/DashboardStaff';
+import DashboardMahasiswa from '../pages/DashboardMahasiswa';
+import ProfileMahasiswa from '../pages/ProfileMahasiswa';
+import ProfileAdmin from '../pages/admin/ProfileAdmin';
+import ProfileStaff from '../pages/staff/ProfileStaff';
 
 const AppRoutes = () => {
   return (
@@ -20,6 +24,10 @@ const AppRoutes = () => {
       <Route path="/admin/manajemen-buku" element={<ManajemenBuku />} />
       <Route path="/admin/manajemen-mahasiswa" element={<ManajemenMahasiswa />} />
       <Route path="/staff/dashboard" element={<DashboardStaff />} />
+      <Route path="/dashboard/mahasiswa" element={<DashboardMahasiswa />} />
+      <Route path="/profile" element={<ProfileMahasiswa />} />
+      <Route path="/admin/profile" element={<ProfileAdmin />} />
+      <Route path="/staff/profile" element={<ProfileStaff />} />
     </Routes>
   );
 };
