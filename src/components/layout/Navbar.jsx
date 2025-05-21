@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { LogOut, User, LayoutDashboard } from 'lucide-react';
+import { LogOut, User, LayoutDashboard,BookOpen } from 'lucide-react';
 
 const Navbar = ({ isVisible, onLogout }) => {
   const { user } = useAuth();
@@ -30,7 +30,7 @@ const Navbar = ({ isVisible, onLogout }) => {
     <nav className={`bg-white/80 backdrop-blur-md shadow-xl px-6 py-3 flex items-center justify-between sticky top-0 z-50 transition-transform duration-500 ease-in-out ${
       isVisible ? 'translate-y-0' : '-translate-y-full'
     }`}>
-      <div className="text-2xl font-bold text-blue-700">⛩ IMPHEN</div>
+      <div className="text-2xl font-bold text-blue-700 flex gap-4"><BookOpen className="w-6 h-6 text-blue-500" /> IMPHEN</div>
 
       <div className="hidden md:flex items-center space-x-10">
         <ul className="flex space-x-6 text-gray-700 font-medium">
@@ -40,7 +40,7 @@ const Navbar = ({ isVisible, onLogout }) => {
           <li className="hover:text-blue-500 transition">
             <Link to="/library">Library</Link>
           </li>
-          <li className="hover:text-blue-500 transition cursor-pointer">History</li>
+       
           <li className="hover:text-blue-500 transition cursor-pointer">About</li>
         </ul>
         {user && user.username ? (
@@ -68,18 +68,48 @@ const Navbar = ({ isVisible, onLogout }) => {
                 <div className="absolute right-0 mt-16 w-64 bg-white rounded-xl shadow-2xl border border-blue-100 z-50 animate-fade-slide">
                   <button
                     className="flex items-center gap-2 w-full text-left px-4 py-3 hover:bg-blue-50 hover:font-semibold hover:text-blue-700 transition rounded-t-xl group"
-                    onClick={() => { setDropdownOpen(false); navigate('/profile'); }}
+                    onClick={() => {
+                      setDropdownOpen(false);
+                      if (user.role === 'admin') {
+                        navigate('/admin/profile');
+                      } else if (user.role === 'staff') {
+                        navigate('/staff/profile');
+                      } else {
+                        navigate('/profile');
+                      }
+                    }}
                   >
                     <User className="w-5 h-5 text-gray-400 group-hover:text-blue-700 transition" />
                     Lihat Profil
                   </button>
-                  <button
-                    className="flex items-center gap-2 w-full text-left px-4 py-3 hover:bg-blue-50 hover:font-semibold hover:text-blue-700 transition group"
-                    onClick={() => { setDropdownOpen(false); navigate('/admin/dashboard'); }}
-                  >
-                    <LayoutDashboard className="w-5 h-5 text-gray-400 group-hover:text-blue-700 transition" />
-                    Dashboard Admin
-                  </button>
+                  {/* Dashboard sesuai role */}
+                  {user.role === 'admin' && (
+                    <button
+                      className="flex items-center gap-2 w-full text-left px-4 py-3 hover:bg-blue-50 hover:font-semibold hover:text-blue-700 transition group"
+                      onClick={() => { setDropdownOpen(false); navigate('/admin/dashboard'); }}
+                    >
+                      <LayoutDashboard className="w-5 h-5 text-gray-400 group-hover:text-blue-700 transition" />
+                      Dashboard Admin
+                    </button>
+                  )}
+                  {user.role === 'mahasiswa' && (
+                    <button
+                      className="flex items-center gap-2 w-full text-left px-4 py-3 hover:bg-blue-50 hover:font-semibold hover:text-blue-700 transition group"
+                      onClick={() => { setDropdownOpen(false); navigate('/dashboard/mahasiswa'); }}
+                    >
+                      <LayoutDashboard className="w-5 h-5 text-gray-400 group-hover:text-blue-700 transition" />
+                      Dashboard Mahasiswa
+                    </button>
+                  )}
+                  {user.role === 'staff' && (
+                    <button
+                      className="flex items-center gap-2 w-full text-left px-4 py-3 hover:bg-blue-50 hover:font-semibold hover:text-blue-700 transition group"
+                      onClick={() => { setDropdownOpen(false); navigate('/staff/dashboard'); }}
+                    >
+                      <LayoutDashboard className="w-5 h-5 text-gray-400 group-hover:text-blue-700 transition" />
+                      Dashboard Staff
+                    </button>
+                  )}
                 </div>
               )}
             </div>
