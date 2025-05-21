@@ -106,8 +106,8 @@ const HeroSection = () => {
               }}
             >
               <img
-                src="imphen.png"
-                alt="Mahasiswa Muslim Membaca Buku"
+                src="muslimahh.png"
+                alt="Enggan NGoding"
                 className="rounded-2xl shadow-2xl transform hover:scale-105 transition-all duration-500 w-full h-auto object-cover"
               />
             </div>
@@ -115,7 +115,7 @@ const HeroSection = () => {
             <div 
               className="absolute -top-6 -right-6 w-24 h-24 bg-yellow-400 rounded-full opacity-20 animate-pulse"
               style={{
-                transform: `translate(${mousePosition.x * 0.2}px, ${mousePosition.y * 0.2}px)`,
+                transform: `translate(${mousePosition.x * 0.5}px, ${mousePosition.y * 0.5}px)`,
               }}
             />
             <div 
