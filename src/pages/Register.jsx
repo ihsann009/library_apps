@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axiosConfig";
+import { Loader2 } from "lucide-react";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -16,6 +18,13 @@ const RegisterPage = () => {
 
   const [error, setError] = useState("");
   const [phoneError, setPhoneError] = useState("");
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -53,7 +62,7 @@ const RegisterPage = () => {
         jk_mahasiswa: formData.jk_mahasiswa,
         jurusan_mahasiswa: formData.jurusan_mahasiswa,
         no_tel_mahasiswa: formData.no_tel_mahasiswa,
-        role: "mahasiswa" // <-- tambahkan baris ini
+        role: "mahasiswa"
       });
   
       if (response.status === 201) {
@@ -64,24 +73,36 @@ const RegisterPage = () => {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 via-white to-blue-200">
+        <div className="relative">
+          <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+          <div className="w-16 h-16 border-4 border-transparent border-l-blue-400 rounded-full animate-spin absolute top-0 left-0" style={{ animationDuration: '1s' }}></div>
+          <div className="w-16 h-16 border-4 border-transparent border-r-blue-300 rounded-full animate-spin absolute top-0 left-0" style={{ animationDuration: '2s' }}></div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-blue-200 font-sans relative">
-      <div className="bg-white drop-shadow-2xl border-3 border-violet-100 rounded-xl p-15 w-full max-w-md">
-        <h2 className="text-3xl font-bold text-center text-gray-800 mb-10">Create Account (Mahasiswa)</h2>
+      <div className="bg-white drop-shadow-2xl border-3 border-violet-100 rounded-xl p-8 w-full max-w-md animate-fade-up">
+        <h2 className="text-3xl font-bold text-center text-gray-800 mb-8 mt-5 animate-fade-up">Create Account</h2>
 
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4 animate-fade-up" role="alert">
             <span className="block sm:inline">{error}</span>
           </div>
         )}
         {phoneError && (
-          <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative mb-4" role="alert">
+          <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative mb-4 animate-fade-up" role="alert">
             <span className="block sm:inline">{phoneError}</span>
           </div>
         )}
 
-        <form className="space-y-6" onSubmit={handleSubmit}>
-          <div>
+        <form className="space-y-6" onSubmit={handleSubmit} autoComplete="off">
+          <div className="animate-fade-up" style={{ animationDelay: '200ms' }}>
             <label className="block font-semibold text-gray-700">Username</label>
             <input
               type="text"
@@ -91,10 +112,11 @@ const RegisterPage = () => {
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
               placeholder="Masukkan username"
               required
+              autoComplete="off"
             />
           </div>
 
-          <div>
+          <div className="animate-fade-up" style={{ animationDelay: '300ms' }}>
             <label className="block font-semibold text-gray-700">Password</label>
             <input
               type="password"
@@ -104,23 +126,24 @@ const RegisterPage = () => {
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
               placeholder="Masukkan password"
               required
+              autoComplete="new-password"
             />
           </div>
 
-          <div>
-            <label className="block font-semibold text-gray-700">Kode Mahasiswa</label>
+          <div className="animate-fade-up" style={{ animationDelay: '400ms' }}>
+            <label className="block font-semibold text-gray-700">Stambuk Mahasiswa</label>
             <input
               type="text"
               name="kode_mahasiswa"
               value={formData.kode_mahasiswa}
               onChange={handleChange}
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-              placeholder="Masukkan Kode Mahasiswa"
+              placeholder="Masukkan Stambuk Mahasiswa"
               required
             />
           </div>
 
-          <div>
+          <div className="animate-fade-up" style={{ animationDelay: '500ms' }}>
             <label className="block font-semibold text-gray-700">Nama Lengkap</label>
             <input
               type="text"
@@ -133,7 +156,7 @@ const RegisterPage = () => {
             />
           </div>
 
-          <div>
+          <div className="animate-fade-up" style={{ animationDelay: '600ms' }}>
             <label className="block font-semibold text-gray-700">Jenis Kelamin</label>
             <select
               name="jk_mahasiswa"
@@ -148,7 +171,7 @@ const RegisterPage = () => {
             </select>
           </div>
 
-          <div>
+          <div className="animate-fade-up" style={{ animationDelay: '700ms' }}>
             <label className="block font-semibold text-gray-700">Jurusan</label>
             <input
               type="text"
@@ -161,7 +184,7 @@ const RegisterPage = () => {
             />
           </div>
 
-          <div>
+          <div className="animate-fade-up" style={{ animationDelay: '800ms' }}>
             <label className="block font-semibold text-gray-700">Nomor Telepon</label>
             <input
               type="text"
@@ -177,12 +200,13 @@ const RegisterPage = () => {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-900 text-white py-2 rounded-lg font-semibold transition duration-200 cursor-pointer"
+            className="w-full bg-blue-600 hover:bg-blue-900 text-white py-2 rounded-lg font-semibold transition duration-200 cursor-pointer animate-fade-up"
+            style={{ animationDelay: '900ms' }}
           >
             Register
           </button>
 
-          <p className="text-center text-gray-600 mt-4">
+          <p className="text-center text-gray-600 mt-4 animate-fade-up" style={{ animationDelay: '1000ms' }}>
             Sudah punya akun?{" "}
             <Link to="/login" className="text-blue-600 hover:underline">
               Login di sini
@@ -190,6 +214,33 @@ const RegisterPage = () => {
           </p>
         </form>
       </div>
+      <style>{`
+        @keyframes fade-up {
+          0% {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-fade-up {
+          animation: fade-up 0.5s ease-out forwards;
+          opacity: 0;
+        }
+        @keyframes bounce-slow {
+          0%, 100% {
+            transform: translateY(-5%);
+          }
+          50% {
+            transform: translateY(5%);
+          }
+        }
+        .animate-bounce-slow {
+          animation: bounce-slow 2s infinite;
+        }
+      `}</style>
     </div>
   );
 };
