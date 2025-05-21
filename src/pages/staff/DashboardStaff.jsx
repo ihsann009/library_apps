@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosConfig";
-import { LogOut, AlertCircle } from "lucide-react";
+import { LogOut, AlertCircle, BookPlus } from "lucide-react";
 
 const DashboardStaff = () => {
   const { user, logout } = useAuth();
@@ -11,11 +11,39 @@ const DashboardStaff = () => {
   const [peminjaman, setPeminjaman] = useState([]);
   const [peminjamanTerlambat, setPeminjamanTerlambat] = useState([]);
   const [error, setError] = useState("");
+  const [showPeminjamanForm, setShowPeminjamanForm] = useState(false);
+  const [books, setBooks] = useState([]);
+  const [students, setStudents] = useState([]);
+  const [formData, setFormData] = useState({
+    id_buku: "",
+    id_mahasiswa: "",
+  });
+  const [submitStatus, setSubmitStatus] = useState({ loading: false, error: "" });
 
   useEffect(() => {
     fetchPeminjaman();
     fetchPeminjamanTerlambat();
+    fetchBooks();
+    fetchStudents();
   }, []);
+
+  const fetchStudents = async () => {
+    try {
+      const res = await axiosInstance.get("/mahasiswaAdmin");
+      setStudents(res.data);
+    } catch (err) {
+      console.error("Gagal memuat data mahasiswa:", err);
+    }
+  };
+
+  const fetchBooks = async () => {
+    try {
+      const res = await axiosInstance.get("/books");
+      setBooks(res.data);
+    } catch (err) {
+      console.error("Gagal memuat data buku:", err);
+    }
+  };
 
   const fetchPeminjaman = async () => {
     setLoading(true);
@@ -32,10 +60,36 @@ const DashboardStaff = () => {
 
   const fetchPeminjamanTerlambat = async () => {
     try {
-      const res = await axiosInstance.get("/staff/peminjaman-terlambat");
+      const res = await axiosInstance.get("/admin/peminjaman-terlambat");
       setPeminjamanTerlambat(res.data);
     } catch (err) {
       console.error("Gagal memuat data peminjaman terlambat:", err);
+    }
+  };
+
+  const handlePeminjamanSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitStatus({ loading: true, error: "" });
+    
+    try {
+      const response = await axiosInstance.post("/peminjaman", {
+        id_buku: formData.id_buku,
+        id_mahasiswa: formData.id_mahasiswa,
+        id_staff: user.id_staff // Menggunakan ID staff yang sedang login
+      });
+
+      if (response.status === 201) {
+        setShowPeminjamanForm(false);
+        setFormData({ id_buku: "", id_mahasiswa: "" });
+        // Tambahkan data baru ke state peminjaman
+        setPeminjaman((prev) => [response.data.data, ...prev]);
+        // Tidak perlu fetchPeminjaman();
+      }
+    } catch (err) {
+      setSubmitStatus({
+        loading: false,
+        error: err.response?.data?.message || "Gagal menambah peminjaman"
+      });
     }
   };
 
@@ -53,12 +107,12 @@ const DashboardStaff = () => {
             <h1 className="text-3xl font-bold text-yellow-700">Dashboard Staff</h1>
             <p className="text-gray-600">Selamat datang, {user?.username}!</p>
           </div>
-          <button
+          {/* <button
             onClick={handleLogout}
             className="flex items-center gap-2 text-red-600 hover:text-red-800 font-semibold"
           >
             <LogOut className="w-5 h-5" /> Logout
-          </button>
+          </button> */}
         </div>
 
         {/* Alert Peminjaman Terlambat */}
@@ -70,6 +124,75 @@ const DashboardStaff = () => {
             </div>
           </div>
         )}
+
+        {/* Form Peminjaman */}
+        <div className="mb-6">
+          <button
+            onClick={() => setShowPeminjamanForm(!showPeminjamanForm)}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-700 transition"
+          >
+            <BookPlus className="w-5 h-5" />
+            {showPeminjamanForm ? 'Tutup Form Peminjaman' : 'Tambah Peminjaman Baru'}
+          </button>
+
+          {showPeminjamanForm && (
+            <div className="mt-4 bg-white rounded-xl shadow-lg p-6">
+              <h3 className="text-lg font-semibold mb-4">Form Peminjaman Buku</h3>
+              {submitStatus.error && (
+                <div className="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                  {submitStatus.error}
+                </div>
+              )}
+              <form onSubmit={handlePeminjamanSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Pilih Buku
+                  </label>
+                  <select
+                    value={formData.id_buku}
+                    onChange={(e) => setFormData({ ...formData, id_buku: e.target.value })}
+                    className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  >
+                    <option value="">Pilih Buku</option>
+                    {books.map((book) => (
+                      <option key={book.id_buku} value={book.id_buku}>
+                        {book.judul_buku} - {book.penulis_buku} (Stok: {book.stok})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Pilih Mahasiswa
+                  </label>
+                  <select
+                    value={formData.id_mahasiswa}
+                    onChange={(e) => setFormData({ ...formData, id_mahasiswa: e.target.value })}
+                    className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  >
+                    <option value="">Pilih Mahasiswa</option>
+                    {students.map((student) => (
+                      <option key={student.id_mahasiswa} value={student.id_mahasiswa}>
+                        {student.nama_mahasiswa} - {student.kode_mahasiswa} ({student.jurusan_mahasiswa})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <button
+                  type="submit"
+                  disabled={submitStatus.loading}
+                  className={`w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition ${
+                    submitStatus.loading ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
+                >
+                  {submitStatus.loading ? 'Memproses...' : 'Tambah Peminjaman'}
+                </button>
+              </form>
+            </div>
+          )}
+        </div>
 
         {/* Tabel Peminjaman */}
         <div className="bg-white rounded-xl shadow-lg p-6">
