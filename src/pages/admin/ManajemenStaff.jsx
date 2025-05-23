@@ -201,8 +201,8 @@ const ManajemenStaff = () => {
 
         {/* Add Modal */}
         {showAddModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <div className="bg-white rounded-lg p-8 max-w-md w-full">
+          <div className="fixed inset-0 bg-white/10 backdrop-blur-sm flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-8 max-w-md w-full shadow-xl">
               <h2 className="text-2xl font-bold mb-4">Tambah Staff</h2>
               <form onSubmit={handleAddStaff}>
                 <div className="space-y-4">
@@ -284,8 +284,8 @@ const ManajemenStaff = () => {
 
         {/* Edit Modal */}
         {showEditModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <div className="bg-white rounded-lg p-8 max-w-md w-full">
+          <div className="fixed inset-0 bg-white/10 backdrop-blur-sm flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-8 max-w-md w-full shadow-xl">
               <h2 className="text-2xl font-bold mb-4">Edit Staff</h2>
               <form onSubmit={handleEditStaff}>
                 <div className="space-y-4">

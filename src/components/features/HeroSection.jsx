@@ -48,7 +48,7 @@ const HeroSection = () => {
       onMouseMove={handleMouseMove}
     >
       {/* Animated Background */}
-      <div className="absolute inset-0 opacity-10">
+      <div className="absolute inset-0 opacity-15">
         <div 
           className="absolute inset-0 transition-transform duration-200 ease-out"
           style={{

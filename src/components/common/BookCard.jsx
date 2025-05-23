@@ -17,7 +17,7 @@ const BookCard = ({ book }) => {
       style={{ cursor: isOutOfStock ? 'not-allowed' : 'pointer' }}
       title={isOutOfStock ? 'Stok habis' : `Buku: ${judul_buku}`}
     >
-      <div className="relative h-44 flex items-center justify-center bg-gray-50">
+      <div className="relative h-64 flex items-center justify-center bg-gray-50">
         {showPlaceholder ? (
           <BookIcon size={56} className="text-blue-200" />
         ) : (
@@ -25,7 +25,7 @@ const BookCard = ({ book }) => {
             src={images}
             alt={judul_buku}
             onError={() => setImgError(true)}
-            className="h-28 w-20 object-contain rounded-md group-hover:scale-105 transition-transform duration-300"
+            className="h-58 w-48 object-contain rounded-md group-hover:scale-105 transition-transform duration-300"
           />
         )}
       </div>
