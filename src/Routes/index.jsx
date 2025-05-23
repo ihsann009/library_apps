@@ -7,6 +7,7 @@ import RegisterPage from '../pages/Register';
 import DashboardAdmin from '../pages/admin/DashboardAdmin';
 import ManajemenBuku from '../pages/admin/ManajemenBuku';
 import ManajemenMahasiswa from '../pages/admin/ManajemenMahasiswa';
+import ManajemenStaff from '../pages/admin/ManajemenStaff';
 import DashboardStaff from '../pages/staff/DashboardStaff';
 import DashboardMahasiswa from '../pages/DashboardMahasiswa';
 import ProfileMahasiswa from '../pages/ProfileMahasiswa';
@@ -23,6 +24,7 @@ const AppRoutes = () => {
       <Route path="/admin/dashboard" element={<DashboardAdmin />} />
       <Route path="/admin/manajemen-buku" element={<ManajemenBuku />} />
       <Route path="/admin/manajemen-mahasiswa" element={<ManajemenMahasiswa />} />
+      <Route path="/admin/manajemen-staff" element={<ManajemenStaff />} />
       <Route path="/staff/dashboard" element={<DashboardStaff />} />
       <Route path="/dashboard/mahasiswa" element={<DashboardMahasiswa />} />
       <Route path="/profile" element={<ProfileMahasiswa />} />
