@@ -48,12 +48,12 @@ const DashboardMahasiswa = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-200 py-10 px-2 md:px-0">
       <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8 relative">
-        <button
+        {/* <button
           onClick={handleLogout}
           className="absolute top-6 right-6 flex items-center gap-2 text-red-600 hover:text-red-800 font-semibold"
         >
           <LogOut className="w-5 h-5" /> Logout
-        </button>
+        </button> */}
         <h2 className="text-3xl font-bold text-blue-700 mb-2">Dashboard Mahasiswa</h2>
         <p className="text-gray-600 mb-6">Selamat datang, <span className="font-semibold text-blue-700">{user?.nama_mahasiswa || user?.username}</span>!</p>
 

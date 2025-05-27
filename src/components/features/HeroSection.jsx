@@ -6,7 +6,7 @@ const stats = [
   { icon: BookOpen, value: '5,000+', label: 'Koleksi Buku' },
   { icon: Users, value: '3,000+', label: 'Mahasiswa Aktif' },
   { icon: Clock, value: '08:00-21:00', label: 'Jam Operasional' },
-  { icon: Star, value: '4.9', label: 'Rating Pengguna' },
+  { icon: Star, value: '4.9', label: 'Rating Maps' },
 ];
 
 const features = [

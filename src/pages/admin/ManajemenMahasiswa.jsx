@@ -208,7 +208,7 @@ const ManajemenMahasiswa = () => {
 
       {/* Add Mahasiswa Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 backdrop-blur-md flex items-center justify-center z-50">
           <div className="bg-white rounded-xl p-6 w-full max-w-md">
             <h2 className="text-xl font-bold text-gray-800 mb-4">Tambah Mahasiswa Baru</h2>
             <form onSubmit={handleAddMahasiswa} className="space-y-4">
@@ -254,13 +254,17 @@ const ManajemenMahasiswa = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">Jenis Kelamin</label>
-                <input
-                  type="text"
+                <select
+                  name="jk_mahasiswa"
                   value={formData.jk_mahasiswa}
                   onChange={(e) => setFormData({...formData, jk_mahasiswa: e.target.value})}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
                   required
-                />
+                >
+                  <option value="">Pilih Jenis Kelamin</option>
+                  <option value="L">Laki-laki</option>
+                  <option value="P">Perempuan</option>
+                </select>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">Jurusan</label>
@@ -304,7 +308,7 @@ const ManajemenMahasiswa = () => {
 
       {/* Edit Mahasiswa Modal */}
       {showEditModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 backdrop-blur-md flex items-center justify-center z-50">
           <div className="bg-white rounded-xl p-6 w-full max-w-md">
             <h2 className="text-xl font-bold text-gray-800 mb-4">Edit Mahasiswa</h2>
             <form onSubmit={handleEditMahasiswa} className="space-y-4">

@@ -23,6 +23,9 @@ const DashboardStaff = () => {
     id_mahasiswa: "",
   });
   const [submitStatus, setSubmitStatus] = useState({ loading: false, error: "" });
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredPeminjamanTerlambat, setFilteredPeminjamanTerlambat] = useState([]);
+  const [filteredPengembalian, setFilteredPengembalian] = useState([]);
 
   useEffect(() => {
     fetchPeminjaman();
@@ -32,6 +35,28 @@ const DashboardStaff = () => {
     fetchPengembalian();
     // eslint-disable-next-line
   }, []);
+
+  useEffect(() => {
+    if (peminjamanTerlambat) {
+      const filtered = peminjamanTerlambat.filter(item => 
+        item.nama_mahasiswa?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.judul_buku?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.kode_mahasiswa?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredPeminjamanTerlambat(filtered);
+    }
+  }, [searchTerm, peminjamanTerlambat]);
+
+  useEffect(() => {
+    if (pengembalian) {
+      const filtered = pengembalian.filter(item => 
+        item.Mahasiswa?.nama_mahasiswa?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.Buku?.judul_buku?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.Mahasiswa?.kode_mahasiswa?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredPengembalian(filtered);
+    }
+  }, [searchTerm, pengembalian]);
 
   const fetchStudents = async () => {
     try {
@@ -79,6 +104,17 @@ const DashboardStaff = () => {
     try {
       const res = await axiosInstance.get("/pengembalian");
       console.log("Data pengembalian:", res.data); // Debug log
+      // Tambahkan log untuk memeriksa struktur data, termasuk field denda
+      if (Array.isArray(res.data)) {
+        res.data.forEach(item => {
+          console.log("Pengembalian item:", item);
+          if (item.jumlah_denda !== undefined) {
+            console.log("Denda found for item:", item.jumlah_denda);
+          } else {
+            console.log("No denda field for item:", item);
+          }
+        });
+      }
       setPengembalian(res.data);
     } catch (err) {
       console.error("Gagal memuat data pengembalian:", err);
@@ -144,8 +180,7 @@ const DashboardStaff = () => {
             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mahasiswa</th>
             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Buku</th>
             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Pinjam</th>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Harus Dikembalikan</th>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Kembali</th>
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
@@ -156,20 +191,11 @@ const DashboardStaff = () => {
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{item.Buku?.judul_buku || '-'}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.tanggal_pinjam ? new Date(item.tanggal_pinjam).toLocaleDateString('id-ID') : '-'}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.tanggal_kembali ? new Date(item.tanggal_kembali).toLocaleDateString('id-ID') : '-'}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">
-                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                    statusLabel === 'Aktif'
-                      ? 'bg-green-100 text-green-800'
-                      : 'bg-red-100 text-red-800'
-                  }`}>
-                    {statusLabel}
-                  </span>
-                </td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="5" className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+              <td colSpan="4" className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
                 Tidak ada data peminjaman
               </td>
             </tr>
@@ -180,42 +206,154 @@ const DashboardStaff = () => {
   );
 
   const renderPengembalianTable = () => (
-    <div className="overflow-x-auto">
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
-          <tr>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mahasiswa</th>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Buku</th>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Kembali</th>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status Pengembalian</th>
-          </tr>
-        </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
-          {pengembalian && pengembalian.length > 0 ? (
-            pengembalian.map((item) => (
-              <tr key={item.id_pengembalian}>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{item.Mahasiswa?.nama_mahasiswa || '-'}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{item.Buku?.judul_buku || '-'}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {item.tanggal_pengembalian ? new Date(item.tanggal_pengembalian).toLocaleDateString('id-ID') : '-'}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {item.status_pengembalian || '-'}
-                  {item.status === 'denda' && item.jumlah_denda && (
-                    <p className="text-xs text-red-600 mt-1">Denda: Rp {item.jumlah_denda.toLocaleString('id-ID')}</p>
-                  )}
+    <div className="space-y-4">
+      {/* Search and Stats */}
+      <div className="flex justify-between items-center">
+        <div className="relative w-64">
+          <input
+            type="text"
+            placeholder="Cari nama/judul/kode..."
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+        <div className="flex gap-4">
+          <div className="bg-green-50 px-4 py-2 rounded-lg">
+            <div className="text-sm text-green-600">Total Pengembalian</div>
+            <div className="text-xl font-bold text-green-700">{filteredPengembalian.length} buku</div>
+          </div>
+          <div className="bg-red-50 px-4 py-2 rounded-lg">
+            <div className="text-sm text-red-600">Total Denda Dibayar</div>
+            <div className="text-xl font-bold text-red-700">
+              Rp {filteredPengembalian.reduce((sum, item) => sum + (item.denda || 0), 0).toLocaleString('id-ID')}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Table */}
+      <div className="overflow-x-auto bg-white rounded-lg shadow">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-50">
+            <tr>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mahasiswa</th>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Buku</th>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Kembali</th>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Denda</th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {filteredPengembalian.length > 0 ? (
+              filteredPengembalian.map((item) => (
+                <tr key={item.id_pengembalian} className="hover:bg-green-50">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm font-medium text-gray-900">{item.Mahasiswa?.nama_mahasiswa || '-'}</div>
+                    <div className="text-sm text-gray-500">{item.Mahasiswa?.kode_mahasiswa || '-'}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{item.Buku?.judul_buku || '-'}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {item.tanggal_pengembalian ? new Date(item.tanggal_pengembalian).toLocaleDateString('id-ID') : '-'}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {item.denda ? (
+                      <div className="text-sm font-medium text-red-600">
+                        Rp {item.denda.toLocaleString('id-ID')}
+                      </div>
+                    ) : (
+                      <span className="text-sm text-green-600">Tidak ada denda</span>
+                    )}
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="4" className="px-6 py-4 text-center text-sm text-gray-500">
+                  {searchTerm ? "Tidak ada hasil pencarian" : "Tidak ada data pengembalian"}
                 </td>
               </tr>
-            ))
-          ) : (
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+
+  const renderPeminjamanTerlambatTable = (data) => (
+    <div className="space-y-4">
+      {/* Search Bar */}
+      <div className="flex justify-between items-center">
+        <div className="relative w-64">
+          <input
+            type="text"
+            placeholder="Cari nama/judul/kode..."
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+        <div className="flex gap-4">
+          <div className="bg-red-50 px-4 py-2 rounded-lg">
+            <div className="text-sm text-red-600">Total Keterlambatan</div>
+            <div className="text-xl font-bold text-red-700">{filteredPeminjamanTerlambat.length} buku</div>
+          </div>
+          <div className="bg-red-50 px-4 py-2 rounded-lg">
+            <div className="text-sm text-red-600">Total Denda</div>
+            <div className="text-xl font-bold text-red-700">
+              Rp {filteredPeminjamanTerlambat.reduce((sum, item) => sum + (item.denda || 0), 0).toLocaleString('id-ID')}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Table */}
+      <div className="overflow-x-auto bg-white rounded-lg shadow">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-50">
             <tr>
-              <td colSpan="4" className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
-                Tidak ada data pengembalian
-              </td>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mahasiswa</th>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Buku</th>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Pinjam</th>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Harus Kembali</th>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Keterlambatan</th>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Denda</th>
             </tr>
-          )}
-        </tbody>
-      </table>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {filteredPeminjamanTerlambat.length > 0 ? (
+              filteredPeminjamanTerlambat.map((item, index) => (
+                <tr key={index} className="hover:bg-red-50">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm font-medium text-gray-900">{item.nama_mahasiswa}</div>
+                    <div className="text-sm text-gray-500">{item.kode_mahasiswa}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{item.judul_buku}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {new Date(item.tanggal_pinjam).toLocaleDateString('id-ID')}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {new Date(item.tanggal_kembali).toLocaleDateString('id-ID')}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                      {item.terlambat} hari
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-red-600">
+                    Rp {item.denda.toLocaleString('id-ID')}
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="6" className="px-6 py-4 text-center text-sm text-gray-500">
+                  {searchTerm ? "Tidak ada hasil pencarian" : "Tidak ada peminjaman terlambat"}
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 
@@ -247,9 +385,9 @@ const DashboardStaff = () => {
             </div>
           </div>
         )}
-
+      <div className="flex flex-col gap-8">
         {/* Form Peminjaman */}
-        <div className="mb-6 flex flex-col md:flex-row items-start md:items-center gap-4">
+        <div className="mb-6">
           <button
             onClick={() => setShowPeminjamanForm(!showPeminjamanForm)}
             className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-700 transition"
@@ -259,7 +397,7 @@ const DashboardStaff = () => {
           </button>
 
           {showPeminjamanForm && (
-            <div className="w-full md:w-auto">
+            <div className="mt-4 w-full bg-white rounded-xl shadow-lg p-6">
               <BookTransactionForm
                 title="Form Peminjaman Buku"
                 onSubmit={handlePeminjamanSubmit}
@@ -275,7 +413,7 @@ const DashboardStaff = () => {
         </div>
 
         {/* Form Pengembalian */}
-        <div className="mb-6 flex flex-col md:flex-row items-start md:items-center gap-4">
+        <div className="mb-6">
           <button
             onClick={() => setShowPengembalianForm(!showPengembalianForm)}
             className="bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-green-700 transition"
@@ -285,7 +423,7 @@ const DashboardStaff = () => {
           </button>
 
           {showPengembalianForm && (
-            <div className="w-full md:w-auto">
+            <div className="mt-4 w-full bg-white rounded-xl shadow-lg p-6">
               <BookTransactionForm
                 title="Form Pengembalian Buku"
                 onSubmit={handlePengembalianSubmit}
@@ -300,7 +438,7 @@ const DashboardStaff = () => {
             </div>
           )}
         </div>
-
+      </div>
         {/* Tabs */}
         <div className="bg-white rounded-xl shadow-lg p-6">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
@@ -352,7 +490,7 @@ const DashboardStaff = () => {
             activeTab === 'active-peminjaman' ? (
               renderPeminjamanTable(peminjamanAktif, 'Aktif')
             ) : activeTab === 'overdue-peminjaman' ? (
-              renderPeminjamanTable(peminjamanTerlambat, 'Terlambat')
+              renderPeminjamanTerlambatTable(peminjamanTerlambat)
             ) : (
               renderPengembalianTable()
             )

@@ -16,11 +16,11 @@ const ManajemenBuku = () => {
   const [selectedBook, setSelectedBook] = useState(null);
   const [formData, setFormData] = useState({
     judul_buku: "",
-    penulis: "",
-    penerbit: "",
+    penulis_buku: "",
+    penerbit_buku: "",
     tahun_terbit: "",
     jumlah_buku: "",
-    kategori: ""
+    images: ""
   });
 
   useEffect(() => {
@@ -52,15 +52,24 @@ const ManajemenBuku = () => {
   const handleAddBook = async (e) => {
     e.preventDefault();
     try {
-      await axiosInstance.post("/books", formData);
+      // Ensure tahun_terbit and jumlah_buku are sent as numbers and use correct field names
+      const dataToSend = {
+        judul_buku: formData.judul_buku,
+        penulis_buku: formData.penulis_buku,
+        penerbit_buku: formData.penerbit_buku,
+        tahun_penerbit: parseInt(formData.tahun_terbit) || 0,
+        stok: parseInt(formData.jumlah_buku) || 0,
+        images: formData.images
+      };
+      await axiosInstance.post("/books", dataToSend);
       setShowAddModal(false);
       setFormData({
         judul_buku: "",
-        penulis: "",
-        penerbit: "",
+        penulis_buku: "",
+        penerbit_buku: "",
         tahun_terbit: "",
         jumlah_buku: "",
-        kategori: ""
+        images: ""
       });
       fetchBooks();
     } catch (err) {
@@ -71,16 +80,25 @@ const ManajemenBuku = () => {
   const handleEditBook = async (e) => {
     e.preventDefault();
     try {
-      await axiosInstance.put(`/books/${selectedBook.id_buku}`, formData);
+      // Ensure tahun_terbit and jumlah_buku are sent as numbers and use correct field names for edit
+      const dataToSend = {
+        judul_buku: formData.judul_buku,
+        penulis_buku: formData.penulis_buku,
+        penerbit_buku: formData.penerbit_buku,
+        tahun_penerbit: parseInt(formData.tahun_terbit) || 0,
+        stok: parseInt(formData.jumlah_buku) || 0,
+        images: formData.images
+      };
+      await axiosInstance.put(`/books/${selectedBook.id_buku}`, dataToSend);
       setShowEditModal(false);
       setSelectedBook(null);
       setFormData({
         judul_buku: "",
-        penulis: "",
-        penerbit: "",
+        penulis_buku: "",
+        penerbit_buku: "",
         tahun_terbit: "",
         jumlah_buku: "",
-        kategori: ""
+        images: ""
       });
       fetchBooks();
     } catch (err) {
@@ -101,8 +119,8 @@ const ManajemenBuku = () => {
 
   const filteredBooks = books.filter(book =>
     book.judul_buku.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    book.penulis.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    book.penerbit.toLowerCase().includes(searchTerm.toLowerCase())
+    book.penulis_buku.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    book.penerbit_buku.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -255,8 +273,8 @@ const ManajemenBuku = () => {
                 <label className="block text-sm font-medium text-gray-700">Penulis</label>
                 <input
                   type="text"
-                  value={formData.penulis}
-                  onChange={(e) => setFormData({...formData, penulis: e.target.value})}
+                  value={formData.penulis_buku}
+                  onChange={(e) => setFormData({...formData, penulis_buku: e.target.value})}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                   required
                 />
@@ -265,8 +283,8 @@ const ManajemenBuku = () => {
                 <label className="block text-sm font-medium text-gray-700">Penerbit</label>
                 <input
                   type="text"
-                  value={formData.penerbit}
-                  onChange={(e) => setFormData({...formData, penerbit: e.target.value})}
+                  value={formData.penerbit_buku}
+                  onChange={(e) => setFormData({...formData, penerbit_buku: e.target.value})}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                   required
                 />
@@ -292,11 +310,11 @@ const ManajemenBuku = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Kategori</label>
+                <label className="block text-sm font-medium text-gray-700">Gambar</label>
                 <input
                   type="text"
-                  value={formData.kategori}
-                  onChange={(e) => setFormData({...formData, kategori: e.target.value})}
+                  value={formData.images}
+                  onChange={(e) => setFormData({...formData, images: e.target.value})}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                   required
                 />
@@ -323,7 +341,7 @@ const ManajemenBuku = () => {
 
       {/* Edit Book Modal */}
       {showEditModal && selectedBook && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 backdrop-blur-md flex items-center justify-center z-50">
           <div className="bg-white rounded-xl p-6 w-full max-w-md">
             <h2 className="text-xl font-bold text-gray-800 mb-4">Edit Buku</h2>
             <form onSubmit={handleEditBook} className="space-y-4">
@@ -341,8 +359,8 @@ const ManajemenBuku = () => {
                 <label className="block text-sm font-medium text-gray-700">Penulis</label>
                 <input
                   type="text"
-                  value={formData.penulis}
-                  onChange={(e) => setFormData({...formData, penulis: e.target.value})}
+                  value={formData.penulis_buku}
+                  onChange={(e) => setFormData({...formData, penulis_buku: e.target.value})}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                   required
                 />
@@ -351,8 +369,8 @@ const ManajemenBuku = () => {
                 <label className="block text-sm font-medium text-gray-700">Penerbit</label>
                 <input
                   type="text"
-                  value={formData.penerbit}
-                  onChange={(e) => setFormData({...formData, penerbit: e.target.value})}
+                  value={formData.penerbit_buku}
+                  onChange={(e) => setFormData({...formData, penerbit_buku: e.target.value})}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                   required
                 />
@@ -360,7 +378,7 @@ const ManajemenBuku = () => {
               <div>
                 <label className="block text-sm font-medium text-gray-700">Tahun Terbit</label>
                 <input
-                  type="number"
+                  type="text"
                   value={formData.tahun_terbit}
                   onChange={(e) => setFormData({...formData, tahun_terbit: e.target.value})}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
@@ -368,41 +386,41 @@ const ManajemenBuku = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Jumlah Buku</label>
+                <label className="block text-sm font-medium text-gray-700">Jumlah</label>
                 <input
                   type="number"
                   value={formData.jumlah_buku}
-                  onChange={(e) => setFormData({...formData, jumlah_buku: e.target.value})}
+                  onChange={(e) => setFormData({...formData, jumlah_buku: parseInt(e.target.value) || 0})}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Kategori</label>
+                <label className="block text-sm font-medium text-gray-700">Gambar</label>
                 <input
                   type="text"
-                  value={formData.kategori}
-                  onChange={(e) => setFormData({...formData, kategori: e.target.value})}
+                  value={formData.images}
+                  onChange={(e) => setFormData({...formData, images: e.target.value})}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                   required
                 />
               </div>
-              <div className="flex justify-end gap-4 mt-6">
+              <div className="flex justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => {
                     setShowEditModal(false);
                     setSelectedBook(null);
                   }}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md"
+                  className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md"
+                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
                 >
-                  Simpan Perubahan
+                  Simpan
                 </button>
               </div>
             </form>
